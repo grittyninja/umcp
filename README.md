@@ -18,6 +18,18 @@ npm test
 npm run build
 ```
 
+Install directly from GitHub:
+
+```bash
+npm install github:grittyninja/umcp
+```
+
+Run once with `npx` from GitHub:
+
+```bash
+npx github:grittyninja/umcp --help
+```
+
 ## Config source of truth
 
 `umcp` uses one JSONC file:
@@ -76,8 +88,8 @@ After (single umcp entry):
 {
   "mcpServers": {
     "umcp": {
-      "command": "node",
-      "args": ["/absolute/path/to/umcp/build/index.js", "serve", "--transport", "stdio"]
+      "command": "npx",
+      "args": ["-y", "github:grittyninja/umcp", "serve", "--transport", "stdio"]
     }
   }
 }
