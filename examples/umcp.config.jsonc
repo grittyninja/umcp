@@ -1,0 +1,55 @@
+{
+  "$schema": "../umcp.config.schema.json",
+
+  "categories": {
+    "web_search": {
+      "providers": [
+        {
+          "name": "brave",
+          "transport": "stdio",
+          "command": "npx",
+          "args": ["-y", "@modelcontextprotocol/server-brave-search"],
+          "env": {
+            "BRAVE_API_KEY": [
+              "BRAVE_API_KEY_1",
+              "BRAVE_API_KEY_2",
+              "BRAVE_API_KEY_3"
+            ]
+          },
+          "tools": [
+            {
+              "upstream": "search",
+              "alias": "search"
+            }
+          ]
+        },
+        {
+          "name": "tavily",
+          "transport": "stdio",
+          "command": "npx",
+          "args": ["-y", "tavily-mcp"],
+          "env": {
+            "TAVILY_API_KEY": "TAVILY_API_KEY"
+          }
+          // tools omitted => auto-discover all tavily tools.
+        }
+      ]
+    },
+    "project_mgmt": {
+      "providers": [
+        {
+          "name": "linear",
+          "transport": "streamable-http",
+          "url": "https://linear-mcp.example.com/mcp",
+          "tools": [
+            {
+              "upstream": "create_issue",
+              "alias": "add_task"
+            }
+          ]
+        }
+      ]
+    }
+  }
+}
+

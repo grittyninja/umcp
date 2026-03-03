@@ -1,0 +1,42 @@
+{
+  "name": "umcp",
+  "version": "0.1.0",
+  "description": "Unified MCP aggregator server",
+  "type": "module",
+  "bin": {
+    "umcp": "./build/index.js"
+  },
+  "files": [
+    "build",
+    "README.md",
+    "umcp.config.schema.json",
+    "examples/umcp.config.jsonc"
+  ],
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "test": "tsx --test test/**/*.test.ts",
+    "dev": "tsx src/index.ts",
+    "start": "node build/index.js",
+    "validate": "tsx src/index.ts validate",
+    "dry-run": "tsx src/index.ts dry-run"
+  },
+  "keywords": [
+    "mcp",
+    "model-context-protocol",
+    "umcp"
+  ],
+  "license": "MIT",
+  "engines": {
+    "node": ">=20"
+  },
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.27.1",
+    "jsonc-parser": "^3.3.1",
+    "zod": "^4.0.0"
+  },
+  "devDependencies": {
+    "@types/node": "^22.13.0",
+    "tsx": "^4.20.5",
+    "typescript": "^5.8.2"
+  }
+}
