@@ -147,10 +147,8 @@ function validateConfigPath(configPath: string): void {
 
 function placeholderConfigTemplate(): string {
   return `{
-  // Optional JSON Schema path/URL for editor validation.
-  // Example local path:
-  // "$schema": "/Users/you/path/to/umcp/umcp.config.schema.json"
-  "$schema": "SCHEMA_PATH_OR_URL",
+  // JSON Schema URL for editor validation.
+  "$schema": "https://raw.githubusercontent.com/grittyninja/umcp/main/umcp.config.schema.json",
 
   "categories": {
     // Any category key is allowed (example: web_search, linear, project_mgmt).

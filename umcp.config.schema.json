@@ -1,6 +1,6 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "urn:umcp:config-schema",
+  "$id": "https://raw.githubusercontent.com/grittyninja/umcp/main/umcp.config.schema.json",
   "title": "umcp.config.jsonc",
   "type": "object",
   "additionalProperties": false,

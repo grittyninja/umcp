@@ -43,6 +43,9 @@ Schema file in this repo:
 Example:
 - `examples/umcp.config.jsonc`
 
+Hosted schema URL:
+- `https://raw.githubusercontent.com/grittyninja/umcp/main/umcp.config.schema.json`
+
 ## CLI
 
 ```bash
