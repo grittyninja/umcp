@@ -1,4 +1,4 @@
-import { mkdirSync } from "node:fs";
+import { accessSync, constants, mkdirSync } from "node:fs";
 import { homedir } from "node:os";
 import { basename, join } from "node:path";
 import { Client } from "@modelcontextprotocol/sdk/client/index.js";
@@ -55,8 +55,15 @@ export function withDefaultNpmCache(
     return { env, applied: false };
   }
 
-  if (env.NPM_CONFIG_CACHE || env.npm_config_cache) {
-    return { env, applied: false };
+  const configuredCache = env.NPM_CONFIG_CACHE ?? env.npm_config_cache;
+  if (configuredCache) {
+    try {
+      mkdirSync(configuredCache, { recursive: true });
+      accessSync(configuredCache, constants.W_OK);
+      return { env, applied: false };
+    } catch {
+      // Existing cache path is not writable. Fall through to a safe fallback.
+    }
   }
 
   const cacheDir = join(homedir(), ".cache", "umcp", "npm");

@@ -132,7 +132,7 @@ Logs are emitted as JSON lines to `stderr`:
 
 ## Troubleshooting
 
-If an upstream stdio provider uses `npm`/`npx` and your global npm cache has ownership issues (for example `EACCES` under `~/.npm/_cacache`), umcp now auto-applies a fallback cache directory at `~/.cache/umcp/npm` unless you explicitly set `NPM_CONFIG_CACHE`.
+If an upstream stdio provider uses `npm`/`npx` and your npm cache has ownership issues (for example `EACCES` under `~/.npm/_cacache`), umcp auto-applies a fallback cache directory at `~/.cache/umcp/npm` whenever no cache is configured or the configured cache is not writable.
 
 You can also force this per provider in `env`:
 
