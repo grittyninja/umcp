@@ -129,3 +129,15 @@ Logs are emitted as JSON lines to `stderr`:
 - `env.rotated`
 - `dry_run.complete`
 - `config.invalid`
+
+## Troubleshooting
+
+If an upstream stdio provider uses `npm`/`npx` and your global npm cache has ownership issues (for example `EACCES` under `~/.npm/_cacache`), umcp now auto-applies a fallback cache directory at `~/.cache/umcp/npm` unless you explicitly set `NPM_CONFIG_CACHE`.
+
+You can also force this per provider in `env`:
+
+```jsonc
+"env": {
+  "NPM_CONFIG_CACHE": "/Users/yan/.cache/umcp/npm"
+}
+```

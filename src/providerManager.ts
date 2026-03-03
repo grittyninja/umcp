@@ -1,3 +1,6 @@
+import { mkdirSync } from "node:fs";
+import { homedir } from "node:os";
+import { basename, join } from "node:path";
 import { Client } from "@modelcontextprotocol/sdk/client/index.js";
 import { SSEClientTransport } from "@modelcontextprotocol/sdk/client/sse.js";
 import { StdioClientTransport } from "@modelcontextprotocol/sdk/client/stdio.js";
@@ -39,6 +42,41 @@ type ProviderManagerOptions = {
 
 type TransportFactory = (provider: ProviderConfig, envValues: Record<string, string>) => unknown;
 
+function isNpmLikeCommand(command: string): boolean {
+  const commandName = basename(command).toLowerCase();
+  return commandName === "npm" || commandName === "npx";
+}
+
+export function withDefaultNpmCache(
+  command: string,
+  env: Record<string, string>
+): { env: Record<string, string>; applied: boolean; cacheDir?: string } {
+  if (!isNpmLikeCommand(command)) {
+    return { env, applied: false };
+  }
+
+  if (env.NPM_CONFIG_CACHE || env.npm_config_cache) {
+    return { env, applied: false };
+  }
+
+  const cacheDir = join(homedir(), ".cache", "umcp", "npm");
+  try {
+    mkdirSync(cacheDir, { recursive: true });
+  } catch {
+    // If directory creation fails, still pass the env var and let npm report if needed.
+  }
+
+  return {
+    env: {
+      ...env,
+      NPM_CONFIG_CACHE: cacheDir,
+      npm_config_cache: cacheDir
+    },
+    applied: true,
+    cacheDir
+  };
+}
+
 const transportFactories: Record<ProviderTransportKind, TransportFactory> = {
   stdio: (provider, envValues) => {
     if (!provider.command) {
@@ -52,13 +90,15 @@ const transportFactories: Record<ProviderTransportKind, TransportFactory> = {
       }
     }
 
+    const npmCacheResolved = withDefaultNpmCache(provider.command, {
+      ...inheritedEnv,
+      ...envValues
+    });
+
     return new StdioClientTransport({
       command: provider.command,
       args: provider.args ?? [],
-      env: {
-        ...inheritedEnv,
-        ...envValues
-      }
+      env: npmCacheResolved.env
     });
   },
   sse: (provider) => {
