@@ -14,6 +14,9 @@
     "categories": {
       "type": "object",
       "minProperties": 1,
+      "propertyNames": {
+        "pattern": "^[a-zA-Z0-9_-]+$"
+      },
       "additionalProperties": {
         "$ref": "#/$defs/category"
       }
@@ -45,7 +48,8 @@
       "properties": {
         "name": {
           "type": "string",
-          "minLength": 1
+          "minLength": 1,
+          "pattern": "^[a-zA-Z0-9_-]+$"
         },
         "transport": {
           "type": "string",
@@ -162,7 +166,8 @@
         },
         "alias": {
           "type": "string",
-          "minLength": 1
+          "minLength": 1,
+          "pattern": "^[a-zA-Z0-9_-]+$"
         },
         "enabled": {
           "type": "boolean",

@@ -3,7 +3,7 @@
 `umcp` solves MCP configuration sprawl by aggregating multiple upstream MCP servers behind one server entry.
 
 Core features:
-- Aggregation with namespaced tools: `{category}.{provider}.{tool}`
+- Aggregation with namespaced tools mapped to MCP-safe names: `{category}_{provider}_{tool}`
 - Tool aliasing via config (`upstream` + optional `alias`)
 - Round-robin env rotation (`string[]` values rotate per invocation)
 - Transport bridging:
@@ -99,16 +99,17 @@ After (single umcp entry):
 ```
 
 Your host then sees tools like:
-- `web_search.brave.search`
-- `web_search.tavily.search`
-- `project_mgmt.linear.add_task`
+- `web_search_brave_search`
+- `web_search_tavily_search`
+- `project_mgmt_linear_add_task`
 
 ## Naming rules
 
-To keep canonical names deterministic as exactly three segments:
+To keep names deterministic and MCP-compatible:
 - category names must match `[a-zA-Z0-9_-]+`
 - provider names must match `[a-zA-Z0-9_-]+`
 - tool aliases must match `[a-zA-Z0-9_-]+`
+- exported tool names are generated as `{category}_{provider}_{tool}` and must match `^[a-zA-Z0-9_-]{1,64}$`
 
 If an auto-discovered upstream tool name contains unsupported characters (for example `.`), umcp requires an explicit `tools` mapping with a valid `alias`.
 

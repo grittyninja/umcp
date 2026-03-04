@@ -7,6 +7,8 @@ import type { Logger } from "./logger.js";
 
 export const DEFAULT_CONFIG_PATH = path.join(os.homedir(), ".config", "umcp", "umcp.jsonc");
 export const NAMESPACE_SEGMENT_REGEX = /^[a-zA-Z0-9_-]+$/;
+export const MCP_TOOL_NAME_REGEX = /^[a-zA-Z0-9_-]{1,64}$/;
+export const TOOL_NAME_SEPARATOR = "_";
 
 const transportKindSchema = z.enum(["stdio", "sse", "streamable-http"]);
 const envValueSchema = z.union([z.string(), z.array(z.string().min(1)).min(1)]);
@@ -156,7 +158,8 @@ function placeholderConfigTemplate(): string {
       "providers": [
         {
           // Provider name becomes the second namespace segment:
-          // {category}.{provider}.{tool}
+          // Exported tool names are MCP-safe:
+          // {category}_{provider}_{tool}
           "name": "brave",
 
           // transport defaults to "stdio", so this can be omitted for simple setups.

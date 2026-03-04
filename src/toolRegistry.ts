@@ -3,7 +3,7 @@ import type { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import type { UmcpConfig, ToolMappingConfig } from "./config.js";
 import type { Logger } from "./logger.js";
 import type { ProviderManager, ProviderRef, UpstreamTool } from "./providerManager.js";
-import { NAMESPACE_SEGMENT_REGEX } from "./config.js";
+import { MCP_TOOL_NAME_REGEX, NAMESPACE_SEGMENT_REGEX, TOOL_NAME_SEPARATOR } from "./config.js";
 
 export type UnifiedToolBinding = {
   providerId: string;
@@ -38,6 +38,22 @@ function ensureToolSegment(
   return value;
 }
 
+function composeFinalToolName(
+  category: string,
+  providerName: string,
+  toolSegment: string,
+  providerId: string
+): string {
+  const finalName = `${category}${TOOL_NAME_SEPARATOR}${providerName}${TOOL_NAME_SEPARATOR}${toolSegment}`;
+  if (!MCP_TOOL_NAME_REGEX.test(finalName)) {
+    throw new Error(
+      `Unified tool name '${finalName}' for '${providerId}' violates ^[a-zA-Z0-9_-]{1,64}$. ` +
+        "Use shorter category/provider names or set a shorter tools[].alias."
+    );
+  }
+  return finalName;
+}
+
 function toConfiguredMappings(
   providerRef: ProviderRef,
   discoveredTools: UpstreamTool[],
@@ -66,7 +82,12 @@ function toConfiguredMappings(
       category: providerRef.category,
       providerName: providerRef.provider.name,
       upstreamName: discovered.name,
-      finalName: `${providerRef.category}.${providerRef.provider.name}.${toolSegment}`,
+      finalName: composeFinalToolName(
+        providerRef.category,
+        providerRef.provider.name,
+        toolSegment,
+        providerRef.providerId
+      ),
       description: discovered.description,
       title: discovered.title,
       inputSchema: discovered.inputSchema
@@ -83,7 +104,14 @@ function toDiscoveredMappings(providerRef: ProviderRef, discoveredTools: Upstrea
         providerId: providerRef.providerId,
         source: "discovered"
       });
-      return { finalName: `${providerRef.category}.${providerRef.provider.name}.${segment}` };
+      return {
+        finalName: composeFinalToolName(
+          providerRef.category,
+          providerRef.provider.name,
+          segment,
+          providerRef.providerId
+        )
+      };
     })(),
     providerId: providerRef.providerId,
     category: providerRef.category,
